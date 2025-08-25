@@ -1,0 +1,4 @@
+# /data1/users/antonz/pipeline/unix_scripts/run-mirror
+#!/usr/bin/env bash
+exec /data1/users/antonz/envs/mirror-3.10/bin/python \
+  /data1/users/antonz/pipeline/unix_scripts/scripts/mirror_tool.py "$@"
