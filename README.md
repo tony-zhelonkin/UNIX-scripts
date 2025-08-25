@@ -13,7 +13,7 @@ pip install --upgrade pip blake3 tqdm
 ```
 
 To run:
-```
+```bash
 # Dry run (preview copy only)
 python mirror_blake3.py \
   /mnt/DMLabHD5Tb1/MogilenkoLab_sequensing \
@@ -40,7 +40,7 @@ ENTRYPOINT ["python", "/app/mirror_blake3.py"]
 ```
 
 Build & run (mount your host paths):
-```
+```bash
 # build
 docker build -t mirror-b3 .
 
@@ -56,6 +56,8 @@ docker run --rm -v /mnt/DMLabHD5Tb1/MogilenkoLab_sequensing:/src:ro \
 ```
 
 If you prefer rootless, use podman run the same way.
+
+
 
 
 ## `mirror_w_checksums.sh`
