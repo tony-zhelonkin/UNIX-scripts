@@ -240,7 +240,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(
         description="Mirror with content manifest and verification"
     )
-    # sub = ap.add_subparsers(dest='cmd')
+    # sub = ap.add_subparsers(dest='cmd') # no subparsers needed
 
     # Common args
     ap.add_argument('--jobs', type=int, default=int(os.environ.get('MIRROR_JOBS', os.cpu_count() or 4)),

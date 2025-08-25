@@ -44,12 +44,14 @@ exec /data1/users/antonz/envs/mirror-3.10/bin/python \
 
 `chmod +x /data1/users/antonz/pipeline/unix_scripts/run-mirror`
 
+And add the wrapper to the PATH (see below), to call it by its name from anywhere
+
 4.	Use it (your example paths):
 
 Dry run (copy preview only):
 
 ```bash
-/data1/users/antonz/pipeline/unix_scripts/scripts/run-mirror \
+run-mirror \
   --step copy --dry-run \
   /mnt/DMLabHD5Tb1/MogilenkoLab_sequensing/ \
   /data1/users/antonz/data/DM_summer_2025
@@ -58,7 +60,7 @@ Dry run (copy preview only):
 Full run (manifest → copy → verify):
 
 ```bash
-/data1/users/antonz/pipeline/unix_scripts/scripts/run-mirror \
+run-mirror \
   --step all --prefer-external-b3 --jobs 8 \
   /mnt/DMLabHD5Tb1/MogilenkoLab_sequensing/ \
   /data1/users/antonz/data/DM_summer_2025
