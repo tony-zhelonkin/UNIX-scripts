@@ -31,13 +31,13 @@ The `mirror_w_checksums.sh` is a deprecated bash script, that works very slow. I
 mkdir -p /data1/users/antonz/envs
 python3 -m venv /data1/users/antonz/envs/mirror-3.10
 /data1/users/antonz/envs/mirror-3.10/bin/python -m pip install --upgrade pip
-```
 
-# Optional speed/progress:
+# Optional installs for speed (b3sum/blake3) and progress bar (tqdm):
 # - try to get system b3sum
 `sudo apt-get update && sudo apt-get install -y b3sum || true`
 # - or install Python wheels
 `/data1/users/antonz/envs/mirror-3.10/bin/pip install blake3 tqdm`
+```
 
 2.	Put mirror_tool.py somewhere, e.g.:
 
@@ -56,9 +56,9 @@ exec /data1/users/antonz/envs/mirror-3.10/bin/python \
 
 And add the wrapper to the PATH (see below), to call it by its name from anywhere
 
-4.	Use it (your example paths):
+4.	Use it (currently my specific paths):
 
-Dry run (copy preview only):
+**Dry run** (copy preview only):
 
 ```bash
 run-mirror \
@@ -67,7 +67,7 @@ run-mirror \
   /data1/users/antonz/data/DM_summer_2025
 ```
 
-Full run (manifest → copy → verify):
+**Full run** (manifest → copy → verify):
 
 ```bash
 run-mirror \
@@ -76,7 +76,7 @@ run-mirror \
   /data1/users/antonz/data/DM_summer_2025
 ```
 
-Just make manifest to stdout, then compress:
+Just make **manifest to stdout**, then compress:
 
 ```bash
 /data1/users/antonz/pipeline/unix_scripts/scripts/run-mirror \
@@ -101,7 +101,7 @@ Exit codes: 0 = success, 1 = verify mismatch, 2 = usage/IO error.
 
 ### B) Docker image
 
-Create Dockerfile next to mirror_tool.py:
+Create *Dockerfile* next to `mirror_tool.py`:
 
 ```Dockerfile
 FROM python:3.11-slim
@@ -112,13 +112,13 @@ COPY mirror_tool.py /app/mirror_tool.py
 ENTRYPOINT ["python", "/app/mirror_tool.py"]
 ```
 
-Build:
+**Build:**
 
 `docker build -t mirror-b3 .`
 
-Run (mount your source/dest):
+**Run** (mount your source/dest):
 
-Dry run copy:
+**Dry run** copy:
 ```bash
 docker run --rm \
   -v /mnt/DMLabHD5Tb1/MogilenkoLab_sequensing:/src:ro \
@@ -126,7 +126,7 @@ docker run --rm \
   mirror-b3 --step copy --dry-run /src /dst
 ```
 
-Full run (manifest → copy → verify):
+**Full run** (manifest → copy → verify):
 ```bash
 docker run --rm \
   -v /mnt/DMLabHD5Tb1/MogilenkoLab_sequensing:/src:ro \
@@ -134,7 +134,7 @@ docker run --rm \
   mirror-b3 --step all --prefer-external-b3 --jobs 8 /src /dst
 ```
 
-Make manifest to host file:
+**Make manifest** to host file:
 
 ```
 docker run --rm \
@@ -146,26 +146,7 @@ docker run --rm \
 
 ### C) “Throw‑away” one‑liner container (no local image kept)
 
-If you don’t want to build an image, you can use python:3.11-slim ad‑hoc (slower first time):
-
-
-```bash
-docker run --rm -it \
-  -v /mnt/DMLabHD5Tb1/MogilenkoLab_sequensing:/src:ro \
-  -v /data1/users/antonz/data/DM_summer_2025:/dst \
-  python:3.11-slim bash -lc '
-    apt-get update && apt-get install -y --no-install-recommends rsync b3sum && \
-    pip install --no-cache-dir tqdm blake3 && \
-    python - <<PY
-from urllib.request import urlopen
-import sys, os
-code = """REPLACEME"""
-print("Please mount mirror_tool.py or bake it into the container.")
-PY
-  '
-```
-
-Realistically, for throw‑away use you should mount the script:
+If you don’t want to build an image, you can use python:3.11-slim ad‑hoc (slower first time). For throw‑away use you should mount the script into the container as well:
 
 ```bash
 docker run --rm \
@@ -179,17 +160,17 @@ docker run --rm \
   '
 ```
 
-(Using --rm makes the container ephemeral.)
+(Using `--rm` makes the container ephemeral.)
 
 ⸻
 
 Notes & tips
-	•	Performance: HDDs tend to like --jobs 4..8; NVMe can go to $(nproc).
+	•	Performance: HDDs tend to like -`-jobs` *`4..8`*; NVMe can go to $(nproc).
 	•	Algorithm choice:
-	•	--algo auto (default): tries external b3sum, then Python blake3, then falls back to sha256.
-	•	Force SHA‑256 if you must: --algo sha256.
-	•	Manifests: by default saved as BLAKE3SUMS (or SHA256SUMS if you force sha256). Use --manifest - to stream.
-	•	Dry run: only affects the copy step (preview with rsync). Manifest and verify are real actions unless you run --step copy --dry-run.
+	•	`--algo auto` (default): tries external `b3sum`, then Python `blake3`, then falls back to `sha256`.
+	•	Force SHA‑256 if you must: `--algo sha256`.
+	•	Manifests: by default saved as BLAKE3SUMS (or SHA256SUMS if you force sha256). Use `--manifest` - to stream.
+	•	**Dry run**: only affects the copy step (preview with rsync). Manifest and verify are real actions unless you run --step copy --dry-run.
 
 That’s it. This setup stays faithful to the “single‑purpose tools that compose” idea:
 	•	pyenv (optional) picks your interpreter,
@@ -205,7 +186,7 @@ That’s it. This setup stays faithful to the “single‑purpose tools that com
 
 ### 1. Put it on your $PATH
 
-If you want to type run-mirror anywhere (like a real command), just make sure the script lives in a directory that’s on your PATH.
+If you want to type `run-mirror` from anywhere (like a real UNIX command), just make sure the script lives in a directory that’s on your PATH.
 
 Example:
 ```bash
