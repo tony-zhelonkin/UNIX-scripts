@@ -1,5 +1,15 @@
 # README 
 
+This is tool for local copying of big files, such as NGS sequencing fastq files from, say, an external drive to the local HDD/SSD. 
+
+The tool doesn\`t currently support scp or remote transfers.
+
+The main executive script is the `mirror_tool.py` file with the `run-mirror` being a simple shell wrapper, which currently hardcodes my local `venv` to run the script without explicitly activating the responsible `venv`.
+
+## Deprecated 
+
+The `mirror_w_checksums.sh` is a deprecated bash script, that works very slow. I intent to replace it with the `mirror_tool.py` after some testing.
+
 ## What this tool does
 	•	make‑manifest: recursively hash all files under SRC into a text manifest ("<hash>  <relative/path>").
 	•	copy: rsync SRC → DST (use --dry-run to preview).
@@ -131,7 +141,6 @@ docker run --rm \
   -v /mnt/DMLabHD5Tb1/MogilenkoLab_sequensing:/src \
   mirror-b3 --step make-manifest --manifest /src/BLAKE3SUMS /src
 ```
-
 
 ⸻
 
